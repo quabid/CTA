@@ -7,7 +7,7 @@ import {
   InvalidCredentialsError,
   PropertyRequiredError,
   stringify,
-} from "../custom_modules/index.js";
+} from "../../custom_modules/index.js";
 
 const logger = bunyan.createLogger({ name: "User Test Controller" });
 const nanoid = customAlphabet("024698ouqtyminv*^#%`~[;>|\\", 13);

@@ -2,8 +2,8 @@ import express from "express";
 import { customAlphabet } from "nanoid";
 import landing from "./routes/landing.js";
 import userRouter from "./routes/user.js";
-import dbroutertest from "./routes/dbtest.js";
-import usertestrouter from "./routes/dbuserstest.js";
+import dbroutertest from "./tests/routes/dbtest.js";
+import usertestrouter from "./tests/routes/dbuserstest.js";
 import { errorHandler, notFound } from "./middleware/ErrorMiddleware.js";
 import { successMessage } from "./custom_modules/index.js";
 

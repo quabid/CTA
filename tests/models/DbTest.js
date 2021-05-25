@@ -1,5 +1,5 @@
 import * as db from "../db/index.js";
-import { stringify } from "../custom_modules/index.js";
+import { stringify } from "../../custom_modules/index.js";
 
 export const listAllDbs = (dbUrl, done) => {
   db.listAllDbsTest((err, data) => {

@@ -8,7 +8,6 @@ import {
   isServerUp,
 } from "../models/DbTest.js";
 import { customAlphabet } from "nanoid";
-import { stringify } from "../custom_modules/index.js";
 
 const logger = bunyan.createLogger({ name: "DB Test Controller" });
 const nanoid = customAlphabet(process.env.NANOID_ALPHABET, 18);
