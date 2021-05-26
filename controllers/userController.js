@@ -6,7 +6,7 @@ import {
   InvalidCredentialsError,
   PropertyRequiredError,
 } from "../custom_modules/index.js";
-import { getAllUsers, getUser, verifyUser } from "../db/index.js";
+import { getAllUsers, getUser } from "../db/index.js";
 import { GeneralError } from "../custom_modules/MyError.js";
 
 const logger = bunyan.createLogger({ name: "User Controller" });
@@ -59,7 +59,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     logger.info(`Data Received: ${email} and ${password}`);
 
     // Check if email exists
-    verifyUser(email)
+    getUser(email)
       .then((data) => {
         // If email exists, tell the user
         if (data.data.docs.length > 0) {

@@ -23,16 +23,3 @@ export const getUser = async (email) => {
     },
   });
 };
-
-// Verify User by email
-export const verifyUser = async (email) => {
-  return await axios({
-    method: "post",
-    url: findUser,
-    data: {
-      selector: {
-        email: email,
-      },
-    },
-  });
-};
