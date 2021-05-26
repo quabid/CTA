@@ -1,31 +1,25 @@
-import request from "request";
+import axios from "axios";
 import { stringify, objectKeysCount } from "../custom_modules/index.js";
-const url = process.env.ALL_USERS;
+const allUsers = process.env.ALL_USERS;
+const findUser = process.env.DB_FIND_USER;
 
 // Get All Users
-export const getAllUsers = (done) => {
-  request(
-    {
-      url: url,
-      json: true,
+export const getAllUsers = async () => {
+  return await axios({
+    method: "get",
+    url: allUsers,
+  });
+};
+
+// Find Single User
+export const getUser = async (email) => {
+  return await axios({
+    method: "post",
+    url: findUser,
+    data: {
+      selector: {
+        email: email,
+      },
     },
-    (err, res, body) => {
-      if (err) {
-        return done(
-          {
-            status: "failed",
-            message: "Unable to get all users list",
-            cause: err,
-          },
-          null
-        );
-      } else {
-        return done(null, {
-          status: "success",
-          data: body,
-          size: objectKeysCount(body),
-        });
-      }
-    }
-  );
+  });
 };
