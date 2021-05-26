@@ -13,6 +13,12 @@ class CustomError extends MyError {
   }
 }
 
+export class GeneralError extends CustomError {
+  constructor(property, cause) {
+    super(property, cause);
+  }
+}
+
 export class PropertyRequiredError extends CustomError {
   constructor(property, cause = 'Object is missing a requred property') {
     super(`Missing property: ${property}`, cause);

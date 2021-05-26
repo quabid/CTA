@@ -1,21 +1,21 @@
-import { generateToken, verifyToken } from './JWTMaker.js';
-import { cap } from './Capper.js';
-import { cls, error, log, table } from './Printer.js';
-import { parse, stringify } from './ObjectUtils.js';
+import { generateToken, verifyToken } from "./JWTMaker.js";
+import { cap } from "./Capper.js";
+import { cls, error, log, table } from "./Printer.js";
+import { parse, stringify, objectKeysCount } from "./ObjectUtils.js";
 import {
   errorMessage,
   fyiMessage,
   infoMessage,
   successMessage,
   warningMessage,
-} from './Message.js';
+} from "./Message.js";
 import {
   InvalidCredentialsError,
   FileExistError,
   InvalidMethodError,
   InvalidVariableError,
   PropertyRequiredError,
-} from './MyError.js';
+} from "./MyError.js";
 
 export {
   generateToken,
@@ -35,5 +35,6 @@ export {
   successMessage,
   warningMessage,
   parse,
-  stringify
+  stringify,
+  objectKeysCount,
 };

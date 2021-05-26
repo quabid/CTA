@@ -5,4 +5,6 @@ const userRouter = Router();
 
 userRouter.route("/register").post(UC.registerUser);
 
+userRouter.route('/list').get(UC.getUsersList);
+
 export default userRouter;
