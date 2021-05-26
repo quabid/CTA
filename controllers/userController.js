@@ -6,7 +6,7 @@ import {
   InvalidCredentialsError,
   PropertyRequiredError,
 } from "../custom_modules/index.js";
-import { getAllUsers, getUser } from "../db/index.js";
+import { getAllUsers, getUser, verifyUser } from "../db/index.js";
 import { GeneralError } from "../custom_modules/MyError.js";
 
 const logger = bunyan.createLogger({ name: "User Controller" });
@@ -50,19 +50,30 @@ export const authUser = asyncHandler(async (req, res) => {
 // @access      Public
 export const registerUser = asyncHandler(async (req, res) => {
   logger.info(
-    `Export: registerUser, Route: /user/register, Method: POST,  Requested URL: ${req.url}`
+    `Export: registerUser, Route: /user/register, Method: ${req.method},  Requested URL: ${req.url}`
   );
 
-  // Check if user exists
-
-  // Create new user
-
-  // Return new user response
-
+  // Validate submitted data
   if (req.body.email && req.body.password) {
     const { email, password } = req.body;
     logger.info(`Data Received: ${email} and ${password}`);
-    res.json({ status: "success", payload: { data: "Good To Go!!" } });
+
+    // Check if email exists
+    verifyUser(email)
+      .then((data) => {
+        // If email exists, tell the user
+        if (data.data.docs.length > 0) {
+          res.status(400).json({
+            status: "failed",
+            message: `${email} is already registered`,
+            cause: `Account already exists for this email`,
+          });
+        } else {
+          // Email does not exist, continue with registration then return new user response
+          res.json({ status: "success", payload: { data: "Good To Go!!" } });
+        }
+      })
+      .catch((err) => console.log(err));
   } else {
     res.status(417);
     throw new PropertyRequiredError("email and password");
@@ -70,11 +81,11 @@ export const registerUser = asyncHandler(async (req, res) => {
 });
 
 // @desc        List all SJH users
-// @route       GET /user/list
+// @route       POST /user/list
 // @access      Public
 export const getUsersList = asyncHandler(async (req, res) => {
   logger.info(
-    `Export: getUsersList, Route: /user/list, Method: GET, Requested URL: ${req.url}`
+    `Export: getUsersList, Route: /user/list, Method: ${req.method}, Requested URL: ${req.url}`
   );
 
   getAllUsers()
@@ -95,21 +106,38 @@ export const getUsersList = asyncHandler(async (req, res) => {
 
 export const getSingleUser = asyncHandler(async (req, res) => {
   logger.info(
-    `Export: getUser, Route: /user/find, Method: GET, Requested URL: ${req.url}`
+    `Export: getUser, Route: /user/find, Method: ${req.method}, Requested URL: ${req.url}`
   );
 
-  getUser()
-    .then((data) => {
-      res.status(200).json({
-        status: data.status,
-        data: data.data,
-        size: data.size,
+  if (req.body.email) {
+    const { email } = req.body;
+    getUser(email)
+      .then((data) => {
+        console.log(data);
+        if (data.data.docs.length == "1") {
+          res.status(200).json({
+            status: "success",
+            data: data.data.docs[0],
+            size: data.data.docs.length,
+          });
+        } else {
+          res.status(404).json({
+            status: "failed",
+            message: `No results found for ${email}`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(501).json({
+          status: err.status,
+          message: err.message,
+        });
       });
-    })
-    .catch((err) => {
-      res.status(501).json({
-        status: err.status,
-        message: err.message,
-      });
+  } else {
+    res.status(411).json({
+      status: "failed",
+      message: "Require JSON with email property",
+      cause: "Missing post data",
     });
+  }
 });

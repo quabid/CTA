@@ -1,3 +1,3 @@
-import { getAllUsers, getUser } from "./saintjohnshospice.js";
+import { getAllUsers, getUser, verifyUser } from "./saintjohnshospice.js";
 
-export { getAllUsers, getUser };
+export { getAllUsers, getUser, verifyUser };
