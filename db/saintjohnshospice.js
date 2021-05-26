@@ -3,7 +3,7 @@ import { stringify, objectKeysCount } from "../custom_modules/index.js";
 const allUsers = process.env.ALL_USERS;
 const findUser = process.env.DB_FIND_USER_BASE;
 
-// Get All Users
+// Get all users
 export const getAllUsers = async () => {
   return await axios({
     method: "get",
@@ -11,7 +11,7 @@ export const getAllUsers = async () => {
   });
 };
 
-// Find Single User
+// Find user by email
 export const getUser = async (email) => {
   return await axios({
     method: "post",
