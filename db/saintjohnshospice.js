@@ -24,7 +24,7 @@ export const getUser = async (email) => {
   });
 };
 
-// Verify User
+// Verify User by email
 export const verifyUser = async (email) => {
   return await axios({
     method: "post",
