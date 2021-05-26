@@ -104,6 +104,9 @@ export const getUsersList = asyncHandler(async (req, res) => {
     });
 });
 
+// @desc        Get SJH user
+// @route       POST /user/find
+// @access      Public
 export const getSingleUser = asyncHandler(async (req, res) => {
   logger.info(
     `Export: getUser, Route: /user/find, Method: ${req.method}, Requested URL: ${req.url}`
