@@ -30,6 +30,19 @@ export const getUser = async (email) => {
   });
 };
 
+// Find user by id
+export const getUser = async (id) => {
+  return await axios({
+    method: "post",
+    url: findUser,
+    data: {
+      selector: {
+        _id: id,
+      },
+    },
+  });
+};
+
 // Add new user
 export const addUser = async (email, password, type, id) => {
   return await axios({

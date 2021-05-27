@@ -3,17 +3,14 @@ import { customAlphabet } from "nanoid";
 import bunyan from "bunyan";
 import {
   generateToken,
-  InvalidCredentialsError,
   PropertyRequiredError,
   hashPassword,
   comparePassword,
 } from "../custom_modules/index.js";
 import { getAllUsers, getUser, addUser, createProfile } from "../db/index.js";
-import { GeneralError } from "../custom_modules/MyError.js";
 
 const logger = bunyan.createLogger({ name: "User Controller" });
 const nanoid = customAlphabet("024698", 15);
-const findUser = process.env.DB_FIND_USER;
 
 // @desc        Authenticate user and get token
 // @route       POST /user/loginconsole.log(err)
