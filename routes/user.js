@@ -3,14 +3,9 @@ import * as UC from "../controllers/userController.js";
 
 const userRouter = Router();
 
-userRouter.route("/register").post(UC.registerUser);
-
-userRouter.route("/list").get(UC.getUsersList);
-
-userRouter.route("/findbyemail").post(UC.getUserByEmail);
-
-userRouter.route("/findbyid").post(UC.getUserById);
-
-userRouter.route("/auth").post(UC.authUser);
+userRouter.route("/profile/create").post(UC.createUserProfile);
+userRouter.route("/email").post(UC.updateUserEmail);
+userRouter.route("/pwd").post(UC.updateUserPassword);
+userRouter.route("/profile/update").post(UC.updateUserProfile);
 
 export default userRouter;

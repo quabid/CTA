@@ -1,6 +1,8 @@
 import express from "express";
 import { customAlphabet } from "nanoid";
 import landing from "./routes/landing.js";
+import authRouter from "./routes/auth.js";
+import adminRouter from "./routes/admin.js";
 import userRouter from "./routes/user.js";
 import dbroutertest from "./tests/routes/dbtest.js";
 import usertestrouter from "./tests/routes/dbuserstest.js";
@@ -31,6 +33,8 @@ server.use(express.json());
 
 // Routers
 server.use("/", landing);
+server.use("/auth", authRouter);
+server.use("/admin", adminRouter);
 server.use("/user", userRouter);
 server.use("/user/test", usertestrouter);
 server.use("/test", dbroutertest);

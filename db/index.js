@@ -4,6 +4,10 @@ import {
   findUserByIdAndRev,
   addUser,
   createProfile,
+  deleteUser,
+  updateEmail,
+  updatePassword,
+  updateProfile,
 } from "./saintjohnshospice.js";
 
 export {
@@ -12,4 +16,8 @@ export {
   addUser,
   createProfile,
   findUserByIdAndRev,
+  deleteUser,
+  updateEmail,
+  updatePassword,
+  updateProfile,
 };
