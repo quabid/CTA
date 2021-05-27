@@ -7,7 +7,13 @@ import {
   hashPassword,
   comparePassword,
 } from "../custom_modules/index.js";
-import { getAllUsers, getUser, addUser, createProfile } from "../db/index.js";
+import {
+  getAllUsers,
+  findUserByEmail,
+  findUserByIdAndRev,
+  addUser,
+  createProfile,
+} from "../db/index.js";
 
 const logger = bunyan.createLogger({ name: "User Controller" });
 const nanoid = customAlphabet("024698", 15);
@@ -23,7 +29,7 @@ export const authUser = asyncHandler(async (req, res) => {
   if (req.body.email && req.body.password) {
     const { email, password } = req.body;
 
-    getUser(email)
+    findUserByEmail(email)
       .then((data) => {
         if (data.data.docs.length == "1") {
           const doc = data.data.docs[0];
@@ -83,7 +89,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     logger.info(`Data Received: ${email} and ${password}`);
 
     // Check if email exists
-    getUser(email)
+    findUserByEmail(email)
       .then((data) => {
         // If email exists, tell the user
         if (data.data.docs.length > 0) {
@@ -169,10 +175,10 @@ export const getUsersList = asyncHandler(async (req, res) => {
     });
 });
 
-// @desc        Get SJH user
+// @desc        Find user by email
 // @route       POST /user/find
 // @access      Public
-export const getSingleUser = asyncHandler(async (req, res) => {
+export const getUserByEmail = asyncHandler(async (req, res) => {
   logger.info(
     `Export: getUser, Route: /user/find, Method: ${req.method}, Requested URL: ${req.url}`
   );
@@ -180,7 +186,49 @@ export const getSingleUser = asyncHandler(async (req, res) => {
   if (req.body.email) {
     const { email } = req.body;
 
-    getUser(email)
+    findUserByEmail(email)
+      .then((data) => {
+        console.log(data);
+        if (data.data.docs.length == "1") {
+          res.status(200).json({
+            status: "success",
+            data: data.data.docs[0],
+            size: data.data.docs.length,
+          });
+        } else {
+          res.status(404).json({
+            status: "failed",
+            message: `No results found for ${email}`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(501).json({
+          status: err.status,
+          message: err.message,
+        });
+      });
+  } else {
+    res.status(411).json({
+      status: "failed",
+      message: "Require JSON with email property",
+      cause: "Missing post data",
+    });
+  }
+});
+
+// @desc        Find user by id and rev
+// @route       POST /user/find
+// @access      Public
+export const getUserById = asyncHandler(async (req, res) => {
+  logger.info(
+    `Export: getUser, Route: /user/find, Method: ${req.method}, Requested URL: ${req.url}`
+  );
+
+  if (req.body.id && req.body.rev) {
+    const { id, rev } = req.body;
+
+    findUserByIdAndRev(id, rev)
       .then((data) => {
         console.log(data);
         if (data.data.docs.length == "1") {

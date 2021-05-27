@@ -1,8 +1,15 @@
 import {
   getAllUsers,
-  getUser,
+  findUserByEmail,
+  findUserByIdAndRev,
   addUser,
   createProfile,
 } from "./saintjohnshospice.js";
 
-export { getAllUsers, getUser, addUser, createProfile };
+export {
+  getAllUsers,
+  findUserByEmail,
+  addUser,
+  createProfile,
+  findUserByIdAndRev,
+};

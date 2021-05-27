@@ -7,7 +7,9 @@ userRouter.route("/register").post(UC.registerUser);
 
 userRouter.route("/list").get(UC.getUsersList);
 
-userRouter.route("/find").post(UC.getSingleUser);
+userRouter.route("/findbyemail").post(UC.getUserByEmail);
+
+userRouter.route("/findbyid").post(UC.getUserById);
 
 userRouter.route("/auth").post(UC.authUser);
 

@@ -18,7 +18,7 @@ export const getAllUsers = async () => {
 };
 
 // Find user by email
-export const getUser = async (email) => {
+export const findUserByEmail = async (email) => {
   return await axios({
     method: "post",
     url: findUser,
@@ -31,7 +31,7 @@ export const getUser = async (email) => {
 };
 
 // Find user by id
-export const getUser = async (id, rev) => {
+export const findUserByIdAndRev = async (id, rev) => {
   return await axios({
     method: "post",
     url: findUser,
