@@ -22,44 +22,54 @@ export const authUser = asyncHandler(async (req, res) => {
   logger.info(
     `Export: authUser, Route: /user/login, Method: POST, Requested URL: ${req.url}`
   );
-  const { email, password } = req.body;
 
-  getUser(email)
-    .then((data) => {
-      if (data.data.docs.length == "1") {
-        const doc = data.data.docs[0];
-        console.log(doc);
-        comparePassword(password, doc.password, (err, response) => {
-          console.log(response);
-          if (response.result) {
-            res.json({
-              id: doc._id,
-              rev: doc._rev,
-              email: doc.email,
-              isAdmin: doc.admin || false,
-              token: generateToken(doc._id),
-            });
-          } else {
-            res.status(401).json({
-              status: "failed",
-              message: "Authentication failed",
-              cause: "Invalid email or password",
-            });
-          }
+  if (req.body.email && req.body.password) {
+    const { email, password } = req.body;
+
+    getUser(email)
+      .then((data) => {
+        if (data.data.docs.length == "1") {
+          const doc = data.data.docs[0];
+          console.log(doc);
+          comparePassword(password, doc.password, (err, response) => {
+            console.log(response);
+            if (response.result) {
+              res.json({
+                id: doc._id,
+                rev: doc._rev,
+                email: doc.email,
+                isAdmin: doc.admin || false,
+                token: generateToken(doc._id),
+              });
+            } else {
+              res.status(401).json({
+                status: "failed",
+                message: "Authentication failed",
+                cause: "Invalid email or password",
+              });
+            }
+          });
+        } else {
+          res.status(404).json({
+            status: "failed",
+            message: `No results found for ${email}`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(501).json({
+          status: err.status,
+          message: err.message,
         });
-      } else {
-        res.status(404).json({
-          status: "failed",
-          message: `No results found for ${email}`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(501).json({
-        status: err.status,
-        message: err.message,
       });
+  } else {
+    console.log(`Missing email and password\n`);
+    res.status(404).json({
+      status: "failed",
+      message: "Missing email and password",
+      cause: "Missing authentication credentials",
     });
+  }
 });
 
 // @desc        Register a new user
