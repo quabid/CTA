@@ -31,13 +31,14 @@ export const getUser = async (email) => {
 };
 
 // Find user by id
-export const getUser = async (id) => {
+export const getUser = async (id, rev) => {
   return await axios({
     method: "post",
     url: findUser,
     data: {
       selector: {
         _id: id,
+        _rev: rev,
       },
     },
   });
