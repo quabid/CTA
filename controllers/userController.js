@@ -5,16 +5,17 @@ import {
   generateToken,
   InvalidCredentialsError,
   PropertyRequiredError,
+  hashPassword,
 } from "../custom_modules/index.js";
-import { getAllUsers, getUser } from "../db/index.js";
+import { getAllUsers, getUser, addUser, createProfile } from "../db/index.js";
 import { GeneralError } from "../custom_modules/MyError.js";
 
 const logger = bunyan.createLogger({ name: "User Controller" });
-const nanoid = customAlphabet("024698ouqtyminv*^#%`~[;>|\\", 13);
+const nanoid = customAlphabet("024698", 15);
 const findUser = process.env.DB_FIND_USER;
 
 // @desc        Authenticate user and get token
-// @route       POST /user/login
+// @route       POST /user/loginconsole.log(err)
 // @access      Public
 export const authUser = asyncHandler(async (req, res) => {
   logger.info(
@@ -54,8 +55,8 @@ export const registerUser = asyncHandler(async (req, res) => {
   );
 
   // Validate submitted data
-  if (req.body.email && req.body.password) {
-    const { email, password } = req.body;
+  if (req.body.email && req.body.password && req.body.type) {
+    const { email, password, type } = req.body;
     logger.info(`Data Received: ${email} and ${password}`);
 
     // Check if email exists
@@ -70,13 +71,54 @@ export const registerUser = asyncHandler(async (req, res) => {
           });
         } else {
           // Email does not exist, continue with registration then return new user response
-          res.json({ status: "success", payload: { data: "Good To Go!!" } });
+          hashPassword(password, (err, hash) => {
+            if (err) {
+              res.status(500).json({
+                status: "failed",
+                message: err,
+              });
+            } else {
+              const id = nanoid();
+              addUser(email, hash.toString(), type, id.toString())
+                .then((data) => {
+                  console.log(data.data);
+                  createProfile(id.toString())
+                    .then((data) => {
+                      console.log(data.data);
+                      res.status(200).json({
+                        status: "success",
+                        data: data.data,
+                      });
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      res.status(505).json({
+                        status: "failed",
+                        message: err,
+                      });
+                    });
+                })
+                .catch((err) => {
+                  console.log(err);
+                  res.status(505).json({
+                    status: "failed",
+                    message: err,
+                  });
+                });
+            }
+          });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+          status: "failed",
+          message: err,
+        });
+      });
   } else {
     res.status(417);
-    throw new PropertyRequiredError("email and password");
+    throw new PropertyRequiredError("email, password and type");
   }
 });
 
@@ -114,6 +156,7 @@ export const getSingleUser = asyncHandler(async (req, res) => {
 
   if (req.body.email) {
     const { email } = req.body;
+
     getUser(email)
       .then((data) => {
         console.log(data);

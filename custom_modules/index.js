@@ -1,4 +1,9 @@
-import { generateToken, verifyToken } from "./JWTMaker.js";
+import {
+  generateToken,
+  verifyToken,
+  hashPassword,
+  comparePassword,
+} from "./JWTMaker.js";
 import { cap } from "./Capper.js";
 import { cls, error, log, table } from "./Printer.js";
 import { parse, stringify, objectKeysCount } from "./ObjectUtils.js";
@@ -20,6 +25,8 @@ import {
 export {
   generateToken,
   verifyToken,
+  hashPassword,
+  comparePassword,
   InvalidCredentialsError,
   FileExistError,
   InvalidMethodError,
