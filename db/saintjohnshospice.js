@@ -42,6 +42,7 @@ export const addUser = async (email, password, type, id) => {
           email: email,
           password: password,
           type: type,
+          admin: false,
         },
       ],
     },
