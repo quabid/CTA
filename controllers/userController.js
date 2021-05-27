@@ -6,6 +6,7 @@ import {
   InvalidCredentialsError,
   PropertyRequiredError,
   hashPassword,
+  comparePassword,
 } from "../custom_modules/index.js";
 import { getAllUsers, getUser, addUser, createProfile } from "../db/index.js";
 import { GeneralError } from "../custom_modules/MyError.js";
@@ -23,27 +24,42 @@ export const authUser = asyncHandler(async (req, res) => {
   );
   const { email, password } = req.body;
 
-  const user = await UserModel.findOne({ email: `${email}` });
-
-  // @ts-ignore
-  if (user && (await user.matchPassword(password))) {
-    res.json({
-      // @ts-ignore
-      _id: user._id,
-      // @ts-ignore
-      fname: user.fname,
-      // @ts-ignore
-      lname: user.lname,
-      // @ts-ignore
-      email: user.email,
-      // @ts-ignore
-      isAdmin: user.isAdmin || false,
-      token: generateToken(user._id),
+  getUser(email)
+    .then((data) => {
+      if (data.data.docs.length == "1") {
+        const doc = data.data.docs[0];
+        console.log(doc);
+        comparePassword(password, doc.password, (err, response) => {
+          console.log(response);
+          if (response.result) {
+            res.json({
+              id: doc._id,
+              rev: doc._rev,
+              email: doc.email,
+              isAdmin: doc.admin || false,
+              token: generateToken(doc._id),
+            });
+          } else {
+            res.status(401).json({
+              status: "failed",
+              message: "Authentication failed",
+              cause: "Invalid email or password",
+            });
+          }
+        });
+      } else {
+        res.status(404).json({
+          status: "failed",
+          message: `No results found for ${email}`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(501).json({
+        status: err.status,
+        message: err.message,
+      });
     });
-  } else {
-    res.status(401);
-    throw new InvalidCredentialsError("Login Failed", "Invalid credentials");
-  }
 });
 
 // @desc        Register a new user

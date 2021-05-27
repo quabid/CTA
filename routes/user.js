@@ -9,4 +9,6 @@ userRouter.route("/list").get(UC.getUsersList);
 
 userRouter.route("/find").post(UC.getSingleUser);
 
+userRouter.route("/auth").post(UC.authUser);
+
 export default userRouter;
