@@ -21,6 +21,6 @@ _A NodeJS todo app; backend Express, frontend React, datastore CouchDB_
   - jsonwebtoken@8.5.1
   - nanoid@3.1.23
 
-###### Insallation
+#### Insallation
 
 _Clone this repository or download the zip, then extract._
