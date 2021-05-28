@@ -7,13 +7,7 @@ import {
   hashPassword,
   comparePassword,
 } from "../custom_modules/index.js";
-import {
-  getAllUsers,
-  findUserByEmail,
-  findUserByIdAndRev,
-  addUser,
-  createProfile,
-} from "../db/index.js";
+import { findUserByEmail, addUser, createProfile } from "../db/index.js";
 
 const logger = bunyan.createLogger({ name: "Auth Controller" });
 const nanoid = customAlphabet("024698", 15);
