@@ -1,12 +1,12 @@
-#### CouchDB Todo Application
+### CouchDB Todo Application
 
 _A NodeJS todo app; backend Express, frontend React, datastore CouchDB_
 
 ---
 
-> > > > > This repository handles the backend stuff.
+#### This repository handles the backend stuff.
 
-- \*\*Technologies
+- ##### Technologies
   - axios@0.21.1
   - bcryptjs@2.4.3
   - body-parser@1.19.0
