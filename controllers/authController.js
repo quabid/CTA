@@ -42,7 +42,7 @@ export const authUser = asyncHandler(async (req, res) => {
                 rev: doc._rev,
                 email: doc.email,
                 isAdmin: doc.admin || false,
-                token: generateToken(doc._id),
+                token: generateToken(doc._id, doc._rev),
               });
             } else {
               res.status(401).json({
