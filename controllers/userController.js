@@ -25,6 +25,7 @@ export const createUserProfile = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    url: `${req.url}`,
   });
 });
 
@@ -38,6 +39,7 @@ export const updateUserEmail = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    url: `${req.url}`,
   });
 });
 
@@ -51,6 +53,7 @@ export const updateUserPassword = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    url: `${req.url}`,
   });
 });
 
@@ -64,5 +67,6 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    url: `${req.url}`,
   });
 });
