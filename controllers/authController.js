@@ -17,7 +17,7 @@ const nanoid = customAlphabet("024698", 15);
 // @access      Public
 export const authUser = asyncHandler(async (req, res) => {
   logger.info(
-    `Export: authUser, Route: /user/signin, Method: POST, Requested URL: ${req.url}`
+    `Export: authUser, Route: /auth/signin, Method: POST, Requested URL: ${req.url}`
   );
 
   if (req.body.email && req.body.password) {
@@ -35,7 +35,6 @@ export const authUser = asyncHandler(async (req, res) => {
                 id: doc._id,
                 rev: doc._rev,
                 email: doc.email,
-                isAdmin: doc.admin || false,
                 token: generateToken(doc._id, doc._rev),
               });
             } else {
@@ -50,13 +49,15 @@ export const authUser = asyncHandler(async (req, res) => {
           res.status(404).json({
             status: "failed",
             message: `No results found for ${email}`,
+            cause: `${email} is not registered`,
           });
         }
       })
       .catch((err) => {
         res.status(501).json({
           status: err.status,
-          message: err.message,
+          message: err,
+          cause: err.message,
         });
       });
   } else {
@@ -140,7 +141,11 @@ export const registerUser = asyncHandler(async (req, res) => {
         });
       });
   } else {
-    res.status(417);
+    res.status(417).json({
+      status: "failed",
+      message: "Missing required registration information",
+      cause: "Registration submission is missing required fields",
+    });
     throw new PropertyRequiredError("email, password and type");
   }
 });

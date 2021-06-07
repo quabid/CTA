@@ -7,7 +7,7 @@ import {
 const allUsers = process.env.ALL_USERS;
 const findUser = process.env.DB_FIND_USER_BASE;
 const newUser = process.env.DB_ADD_NEW_USER_BASE;
-const newUserProfile = process.env.DB_ADD_NEW_USER_PROFILES_BASE;
+const newUserProfile = process.env.DB_ADD_USER_PROFILES_BASE;
 
 // Get all users
 export const getAllUsers = async () => {
@@ -85,6 +85,9 @@ export const createProfile = async (id) => {
     },
   });
 };
+
+// Create user todo
+export const createTodo = async (id, uid) => new Promise().resolve({ id, uid });
 
 // Update user profile
 export const updateProfile = async (id, rev, fname, lname, gender) =>

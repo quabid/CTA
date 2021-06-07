@@ -13,7 +13,9 @@ export const protect = asyncHandler(async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
       const decoded = verifyToken(token);
       console.log(decoded);
-      req.user = await findUserByIdAndRev(decoded.id, decoded.rev);
+      const { data } = await findUserByIdAndRev(decoded.id, decoded.rev);
+      // console.log(data);
+      req.user = data.docs[0];
     } catch (err) {
       console.clear();
       console.log(err.message);

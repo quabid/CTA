@@ -4,12 +4,13 @@ import landing from "./routes/landing.js";
 import authRouter from "./routes/auth.js";
 import adminRouter from "./routes/admin.js";
 import userRouter from "./routes/user.js";
+import todoRouter from "./routes/todo.js";
 import dbroutertest from "./tests/routes/dbtest.js";
 import usertestrouter from "./tests/routes/dbuserstest.js";
 import { errorHandler, notFound } from "./middleware/ErrorMiddleware.js";
 import { successMessage } from "./custom_modules/index.js";
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 const nanoid = customAlphabet("024698ouqtyminv*^#%`~[;>|\\", 13);
 const server = express();
 
@@ -36,6 +37,7 @@ server.use("/", landing);
 server.use("/auth", authRouter);
 server.use("/admin", adminRouter);
 server.use("/user", userRouter);
+server.use("/api/todos", todoRouter);
 server.use("/user/test", usertestrouter);
 server.use("/test", dbroutertest);
 
