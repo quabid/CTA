@@ -33,3 +33,17 @@ export const addTodo = asyncHandler(async (req, res) => {
     payload: newTodo,
   });
 });
+
+// @desc        Get a user's todos
+// @route       GET /api/todos
+// @access      Private
+export const getTodos = asyncHandler(async (req, res) => {
+  logger.info(
+    `Export: getTodos, Route: /api/todos, Method: GET, Requested URL: ${req.url}`
+  );
+
+  res.status(200).json({
+    status: "success",
+    url: req.url,
+  });
+});
