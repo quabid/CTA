@@ -1,7 +1,16 @@
 import asyncHandler from 'express-async-handler';
 import { customAlphabet } from 'nanoid';
 import bunyan from 'bunyan';
-import { findUserByEmail, addUser, createProfile, listTodos, createTodo, getTodo, deleteTodo } from '../db/index.js';
+import {
+	findUserByEmail,
+	addUser,
+	createProfile,
+	listTodos,
+	createTodo,
+	getTodo,
+	deleteTodo,
+	updateTodo
+} from '../db/index.js';
 
 const logger = bunyan.createLogger({ name: 'Todo Controller' });
 const nanoid = customAlphabet('0123456789T', 15);
@@ -157,7 +166,7 @@ export const getTodos = asyncHandler(async (req, res) => {
 // @desc        Update a user's todo
 // @route       POST /api/todos/update
 // @access      Private
-export const updateTodo = asyncHandler(async (req, res) => {
+export const updateTodoDocument = asyncHandler(async (req, res) => {
 	logger.info(`Export: updateTodo, Route: /api/todos/update, Method: POST, Requested URL: ${req.url}`);
 
 	const oldTodo = {};
@@ -173,12 +182,12 @@ export const updateTodo = asyncHandler(async (req, res) => {
 		oldTodo.todoAuthor = req.body.todoAuthor;
 	}
 
-	if (req.body.todoStart) {
-		oldTodo.start = req.body.todoStart;
+	if (req.body.startdate) {
+		oldTodo.startdate = req.body.startdate;
 	}
 
-	if (req.body.todoEnd) {
-		oldTodo.end = req.body.todoEnd;
+	if (req.body.enddate) {
+		oldTodo.enddate = req.body.enddate;
 	}
 
 	if (req.body.title) {
@@ -189,9 +198,23 @@ export const updateTodo = asyncHandler(async (req, res) => {
 		oldTodo.body = req.body.body;
 	}
 
-	res.status(200).json({
-		status: 'success',
-		url: req.url,
-		payload: oldTodo
-	});
+	const { rev, tid } = req.body;
+
+	updateTodo(oldTodo, rev, tid)
+		.then((data) => {
+			res.status(200).json({
+				status: 'success',
+				url: req.url,
+				payload: data
+			});
+		})
+		.catch((err) => {
+			console.log(err);
+			res.status(412).json({
+				status: 'failed',
+				url: req.url,
+				payload: oldTodo,
+				cause: err
+			});
+		});
 });
