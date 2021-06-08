@@ -10,7 +10,11 @@ import {
   updateProfile,
 } from "./saintjohnshospice.js";
 
-import { listTodos, createTodo } from "./saintjhonsuserstodos.js";
+import {
+  listTodos,
+  createTodo,
+  getTodo
+} from "./saintjhonsuserstodos.js";
 
 export {
   getAllUsers,
@@ -24,4 +28,5 @@ export {
   updateProfile,
   listTodos,
   createTodo,
+  getTodo
 };
