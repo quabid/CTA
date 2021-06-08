@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import { customAlphabet } from 'nanoid';
 import bunyan from 'bunyan';
-import { findUserByEmail, addUser, createProfile, listTodos, createTodo, getTodo } from '../db/index.js';
+import { findUserByEmail, addUser, createProfile, listTodos, createTodo, getTodo, deleteTodo } from '../db/index.js';
 
 const logger = bunyan.createLogger({ name: 'Todo Controller' });
 const nanoid = customAlphabet('0123456789T', 15);
@@ -76,10 +76,24 @@ export const addTodo = asyncHandler(async (req, res) => {
 export const removeTodo = asyncHandler(async (req, res) => {
 	logger.info(`Export: removeTodo, Route: /api/todos/remove, Method: POST, Requested URL: ${req.url}`);
 
-	res.status(200).json({
-		status: 'success',
-		url: req.url
-	});
+	const { tid, rev } = req.body;
+
+	deleteTodo(tid, rev)
+		.then((data) => {
+			console.log(data);
+			res.status(200).json({
+				status: 'success',
+				url: req.url
+			});
+		})
+		.catch((err) => {
+			console.log(err);
+			res.status(200).json({
+				status: 'failed',
+				url: req.url,
+				cause: err
+			});
+		});
 });
 
 // @desc        Get a user's single todo
