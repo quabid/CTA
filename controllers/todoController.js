@@ -1,7 +1,13 @@
 import asyncHandler from "express-async-handler";
 import { customAlphabet } from "nanoid";
 import bunyan from "bunyan";
-import { findUserByEmail, addUser, createProfile } from "../db/index.js";
+import {
+  findUserByEmail,
+  addUser,
+  createProfile,
+  listTodos,
+  createTodo,
+} from "../db/index.js";
 
 const logger = bunyan.createLogger({ name: "Todo Controller" });
 const nanoid = customAlphabet("0123456789T", 15);
@@ -14,27 +20,64 @@ export const addTodo = asyncHandler(async (req, res) => {
     `Export: addTodo, Route: /api/todos/add, Method: POST, Requested URL: ${req.url}`
   );
 
- console.log(`\n\tReceived new todo data: ${JSON.stringify(req.body)}\n`);
+  console.log(`\n\tReceived new todo data: ${JSON.stringify(req.body)}\n`);
 
   const newTodo = {};
-  if (req.body.payload.startdate) {
-    newTodo.start = req.body.payload.startdate;
+
+  if (req.body.payload) {
+    if (req.body.payload.startdate) {
+      newTodo.start = req.body.payload.startdate;
+    }
+
+    if (req.body.payload.enddate) {
+      newTodo.end = req.body.payload.enddate;
+    }
+
+    const {
+      payload: { title, body },
+    } = req.body;
+
+    newTodo.title = title;
+    newTodo.body = body;
+    newTodo.author = req.user._id;
+  } else {
+    if (req.body.startdate) {
+      newTodo.startdate = req.body.startdate;
+    }
+
+    if (req.body.enddate) {
+      newTodo.startdate = req.body.enddate;
+    }
+
+    const { title, body } = req.body;
+    newTodo.title = title;
+    newTodo.body = body;
+    newTodo.author = req.user._id;
   }
 
-  if (req.body.payload.enddate) {
-    newTodo.end = req.body.payload.enddate;
-  }
+  createTodo(newTodo)
+    .then((data) => {
+      console.log(data.data);
+      res.status(200).json({
+        status: "success",
+        data: data.data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(418).json({
+        status: "failed",
+        message: err.message,
+        cause: "Could not create the todo document",
+      });
+    });
 
-  const {payload:{ title, body} } = req.body;
-  newTodo.title = title;
-  newTodo.body = body;
-
-  res.status(200).json({
+  /*   res.status(200).json({
     status: "success",
     url: req.url,
     payload: newTodo,
-    userId:req.user._id
-  });
+    userId: req.user._id,
+  }); */
 });
 
 // @desc        Delete a user's todo
@@ -78,11 +121,25 @@ export const getTodos = asyncHandler(async (req, res) => {
 
   const author = req.params.author;
 
-  res.status(200).json({
-    status: "success",
-    url: req.url,
-    author: author,
-  });
+  listTodos(author)
+    .then((data) => {
+      res.status(200).json({
+        status: "success",
+        url: req.url,
+        author: author,
+        data: data.data.docs,
+        userId: req.user._id,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(404).json({
+        status: "failed",
+        url: req.url,
+        author: author,
+        error: err,
+      });
+    });
 });
 
 // @desc        Update a user's todo
