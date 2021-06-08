@@ -14,16 +14,18 @@ export const addTodo = asyncHandler(async (req, res) => {
     `Export: addTodo, Route: /api/todos/add, Method: POST, Requested URL: ${req.url}`
   );
 
+ console.log(`\n\tReceived new todo data: ${JSON.stringify(req.body)}\n`);
+
   const newTodo = {};
-  if (req.body.todoStart) {
-    newTodo.start = req.body.todoStart;
+  if (req.body.payload.startdate) {
+    newTodo.start = req.body.payload.startdate;
   }
 
-  if (req.body.todoEnd) {
-    newTodo.end = req.body.todoEnd;
+  if (req.body.payload.enddate) {
+    newTodo.end = req.body.payload.enddate;
   }
 
-  const { title, body } = req.body;
+  const {payload:{ title, body} } = req.body;
   newTodo.title = title;
   newTodo.body = body;
 
@@ -31,6 +33,7 @@ export const addTodo = asyncHandler(async (req, res) => {
     status: "success",
     url: req.url,
     payload: newTodo,
+    userId:req.user._id
   });
 });
 
