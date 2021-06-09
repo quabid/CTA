@@ -8,7 +8,7 @@ todoRouter.route('/add').post(protect, TC.addTodo);
 
 todoRouter.route('/remove').post(protect, TC.removeTodo);
 
-todoRouter.route('/update').put(protect, TC.updateTodoDocument);
+todoRouter.route('/update').post(protect, TC.updateTodoDocument);
 
 todoRouter.route('/:author').get(protect, TC.getTodos);
 

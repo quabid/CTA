@@ -47,12 +47,11 @@ export const deleteTodo = async (tid, rev) => {
 };
 
 // Update todo
-export const updateTodo = async (objFields, rev, tid) => {
+export const updateTodo = async (objFields, id) => {
 	return await axios({
 		method: 'put',
-		url: `${updateDocumentUrl}${tid}`,
+		url: `${updateDocumentUrl}/${id}`,
 		data: {
-			_rev: rev,
 			objFields
 		}
 	});

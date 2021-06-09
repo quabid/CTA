@@ -169,7 +169,9 @@ export const getTodos = asyncHandler(async (req, res) => {
 export const updateTodoDocument = asyncHandler(async (req, res) => {
 	logger.info(`Export: updateTodo, Route: /api/todos/update, Method: POST, Requested URL: ${req.url}`);
 
+	const { rev, tid } = req.body;
 	const oldTodo = {};
+
 	if (req.body.todoId) {
 		oldTodo.todoId = req.body.todoId;
 	}
@@ -198,9 +200,9 @@ export const updateTodoDocument = asyncHandler(async (req, res) => {
 		oldTodo.body = req.body.body;
 	}
 
-	const { rev, tid } = req.body;
+	oldTodo._rev = rev;
 
-	updateTodo(oldTodo, rev, tid)
+	updateTodo(oldTodo, tid)
 		.then((data) => {
 			res.status(200).json({
 				status: 'success',
@@ -210,11 +212,11 @@ export const updateTodoDocument = asyncHandler(async (req, res) => {
 		})
 		.catch((err) => {
 			console.log(err);
-			res.status(412).json({
+			res.status(401).json({
 				status: 'failed',
 				url: req.url,
 				payload: oldTodo,
-				cause: err
+				cause: err.stack
 			});
 		});
 });
