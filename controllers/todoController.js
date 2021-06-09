@@ -215,7 +215,6 @@ export const updateTodoDocument = asyncHandler(async (req, res) => {
 			res.status(401).json({
 				status: 'failed',
 				url: req.url,
-				payload: oldTodo,
 				cause: err.stack
 			});
 		});
