@@ -15,7 +15,7 @@ import {
 const logger = bunyan.createLogger({ name: 'Todo Controller' });
 const nanoid = customAlphabet('0123456789T', 15);
 
-// @desc        Creates a user's todo
+// @desc        Creates todo
 // @route       POST /api/todos/add
 // @access      Private
 export const addTodo = asyncHandler(async (req, res) => {
@@ -79,7 +79,7 @@ export const addTodo = asyncHandler(async (req, res) => {
   }); */
 });
 
-// @desc        Delete a user's todo
+// @desc        Delete todo
 // @route       POST /api/todos/remove
 // @access      Private
 export const removeTodo = asyncHandler(async (req, res) => {
@@ -105,7 +105,7 @@ export const removeTodo = asyncHandler(async (req, res) => {
 		});
 });
 
-// @desc        Get a user's single todo
+// @desc        Get todo
 // @route       POST /api/todos/id
 // @access      Private
 export const getSingleTodo = asyncHandler(async (req, res) => {
@@ -134,7 +134,7 @@ export const getSingleTodo = asyncHandler(async (req, res) => {
 		});
 });
 
-// @desc        Get a author's todos
+// @desc        List todos
 // @route       GET /api/todos/author
 // @access      Private
 export const getTodos = asyncHandler(async (req, res) => {
@@ -163,7 +163,7 @@ export const getTodos = asyncHandler(async (req, res) => {
 		});
 });
 
-// @desc        Update a user's todo
+// @desc        Update todo
 // @route       POST /api/todos/update
 // @access      Private
 export const updateTodoDocument = asyncHandler(async (req, res) => {
