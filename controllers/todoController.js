@@ -39,6 +39,7 @@ export const addTodo = asyncHandler(async (req, res) => {
 		newTodo.title = title;
 		newTodo.body = body;
 		newTodo.author = req.user._id;
+		newTodo.name = nanoid();
 	} else {
 		if (req.body.startdate) {
 			newTodo.startdate = req.body.startdate;
@@ -52,6 +53,7 @@ export const addTodo = asyncHandler(async (req, res) => {
 		newTodo.title = title;
 		newTodo.body = body;
 		newTodo.author = req.user._id;
+		newTodo.name = nanoid();
 	}
 
 	createTodo(newTodo)
@@ -140,27 +142,9 @@ export const getSingleTodo = asyncHandler(async (req, res) => {
 export const getTodos = asyncHandler(async (req, res) => {
 	logger.info(`Export: getTodos, Route: /api/todos/author, Method: GET, Requested URL: ${req.url}`);
 
-	const author = req.params.author;
-
-	listTodos(author)
-		.then((data) => {
-			res.status(200).json({
-				status: 'success',
-				url: req.url,
-				author: author,
-				data: data.data.docs,
-				userId: req.user._id
-			});
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(404).json({
-				status: 'failed',
-				url: req.url,
-				author: author,
-				error: err
-			});
-		});
+	const author = req.user._id;
+console.log(`User ID: ${author}`);
+res.status(200).json({status: 'success'});
 });
 
 // @desc        Update todo
@@ -169,7 +153,7 @@ export const getTodos = asyncHandler(async (req, res) => {
 export const updateTodoDocument = asyncHandler(async (req, res) => {
 	logger.info(`Export: updateTodo, Route: /api/todos/update, Method: POST, Requested URL: ${req.url}`);
 
-	const { rev, tid } = req.body;
+	const { rev, tid, name } = req.body;
 	const oldTodo = {};
 
 	if (req.body.todoId) {
@@ -201,13 +185,15 @@ export const updateTodoDocument = asyncHandler(async (req, res) => {
 	}
 
 	oldTodo._rev = rev;
+	oldTodo._id = tid;
+	oldTodo.name = name;
 
-	updateTodo(oldTodo, tid)
+	updateTodo(oldTodo)
 		.then((data) => {
 			res.status(200).json({
 				status: 'success',
 				url: req.url,
-				payload: data
+				payload: data.data
 			});
 		})
 		.catch((err) => {

@@ -22,6 +22,7 @@ export const authUser = asyncHandler(async (req, res) => {
 
   if (req.body.email && req.body.password) {
     const { email, password } = req.body;
+    console.log(`Sign In Data: ${email} and ${password}`);
 
     findUserByEmail(email)
       .then((data) => {
@@ -97,6 +98,7 @@ export const registerUser = asyncHandler(async (req, res) => {
           // Email does not exist, continue with registration then return new user response
           hashPassword(password, (err, hash) => {
             if (err) {
+              console.log(err);
               res.status(500).json({
                 status: "failed",
                 message: err,
@@ -146,6 +148,5 @@ export const registerUser = asyncHandler(async (req, res) => {
       message: "Missing required registration information",
       cause: "Registration submission is missing required fields",
     });
-    throw new PropertyRequiredError("email, password and type");
   }
 });
