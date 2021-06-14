@@ -140,11 +140,24 @@ export const getSingleTodo = asyncHandler(async (req, res) => {
 // @route       GET /api/todos/author
 // @access      Private
 export const getTodos = asyncHandler(async (req, res) => {
-	logger.info(`Export: getTodos, Route: /api/todos/author, Method: GET, Requested URL: ${req.url}`);
+	logger.info(`Export: getTodos, Route: /api/todos, Method: GET, Requested URL: ${req.url}`);
 
 	const author = req.user._id;
-console.log(`User ID: ${author}`);
-res.status(200).json({status: 'success'});
+	listTodos(author)
+		.then((data) => {
+			console.log(data.data);
+			res.status(200).json({
+				records: data.data
+			});
+		})
+		.catch((err) => {
+			console.log(err);
+			res.status(404).json({
+				status: 'failed',
+				message: err.message,
+				cause: err
+			});
+		});
 });
 
 // @desc        Update todo

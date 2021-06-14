@@ -1,5 +1,5 @@
 import express from 'express';
-import https from 'https';
+//import https from 'https';
 import { customAlphabet } from 'nanoid';
 import fs from 'fs';
 import landing from './routes/landing.js';
@@ -18,7 +18,7 @@ const cert = fs.readFileSync('./cert.pem');
 const PORT = process.env.PORT || 4000;
 const nanoid = customAlphabet('024698ouqtyminv*^#%`~[;>|\\', 13);
 const app = express();
-const server = https.createServer({ key: key, cert: cert }, app);
+//const server = https.createServer({ key: key, cert: cert }, app);
 
 app.use((req, res, next) => {
 	res.setHeader('Cache-Control', 'no-cache,no-store,max-age=0,must-revalidate');
@@ -50,7 +50,7 @@ app.use('/test', dbroutertest);
 app.use(notFound);
 app.use(errorHandler);
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
 	console.clear();
 	successMessage(`\n\tApp listening on port ${PORT}\n`);
 });
