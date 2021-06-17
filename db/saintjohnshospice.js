@@ -6,6 +6,7 @@ const newUser = process.env.DB_ADD_NEW_USER_BASE;
 const newUserProfile = process.env.DB_ADD_USER_PROFILE_BASE;
 const updateUserProfile = process.env.DB_UPDATE_USER_PROFILE_BASE;
 const findUserProfile = process.env.DB_FIND_USER_PROFILE_BASE;
+const updateUser = process.env.DB_UPDATE_USER_BASE;
 
 // Get all users
 export const getAllUsers = async () => {
@@ -62,7 +63,16 @@ export const addUser = async (email, password, type, id) => {
 };
 
 // Update user email
-export const updateEmail = async (id, rev, email) => new Promise().resolve({ id, rev, email });
+export const updateEmail = async (id, rev, updateObject) => {
+	return await axios({
+		method: 'put',
+		url: `${updateUser}/${id}`,
+		data: updateObject,
+		headers: {
+			'If-Match': rev
+		}
+	});
+};
 
 // Update user password
 export const updatePassword = async (id, rev, password) => new Promise().resolve({ id, rev, password });

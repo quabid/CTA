@@ -4,8 +4,7 @@ import { protect } from '../middleware/AuthMiddleware.js';
 
 const userRouter = Router();
 
-// userRouter.route('/pwd').post(protect, UC.updateUserPassword);
-// userRouter.route('/email').post(protect, UC.updateUserEmail);
+userRouter.route('/email/update').post(UC.updateUserEmail);
 userRouter.route('/profile/update').post(protect, UC.updateUserProfile);
 userRouter.route('/profile/create').post(protect, UC.createUserProfile);
 

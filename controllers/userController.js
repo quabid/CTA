@@ -1,14 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import bunyan from 'bunyan';
 import { generateToken, PropertyRequiredError, hashPassword, comparePassword } from '../custom_modules/index.js';
-import {
-	createProfile,
-	updateEmail,
-	updatePassword,
-	updateProfile,
-	findUserByEmail,
-	getUserProfile
-} from '../db/index.js';
+import { updateEmail, updateProfile, findUserByEmail, getUserProfile } from '../db/index.js';
 
 const logger = bunyan.createLogger({ name: 'User Controller' });
 
@@ -48,13 +41,55 @@ export const createUserProfile = asyncHandler(async (req, res) => {
 // @desc        Update password
 // @route       POST /user/pwd
 // @access      Private
-export const updateUserPassword = asyncHandler(async (req, res) => {
+export const updateUserEmail = asyncHandler(async (req, res) => {
 	logger.info(`Export: updateUserPassword, Route: /user/pwd, Method: POST, Requested URL: ${req.url}`);
 
-	res.status(200).json({
-		status: 'success',
-		url: `${req.url}`
-	});
+	const { oldEmail, newEmail } = req.body;
+	const updateObj = {};
+
+	// Find user by email
+	// Use the user._id to find the profile
+	// Update the user's profile with given data
+
+	findUserByEmail(oldEmail)
+		.then((data) => {
+			console.log(`\n\tFound user by email: ${JSON.stringify(data.data)}\n`);
+
+			// Get the user._id
+			const userId = data.data.docs[0]._id;
+			const userRev = data.data.docs[0]._rev;
+
+			// Assign user data to the updateObj
+			Object.assign(updateObj, data.data.docs[0]);
+
+			// Replace the oldEmail
+			updateObj.email = newEmail;
+
+			console.log(`\n\t\tNew email: ${JSON.stringify(updateObj)}\n`);
+
+			// Update the user's email
+			updateEmail(userId, userRev, updateObj)
+				.then((data) => {
+					console.log(`\n\tUpdated user's email: ${data.data.docs[0]}\n`);
+					res.status(200).json({
+						status: 'success',
+						payload: data.data.docs[0]
+					});
+				})
+				.catch((err) => {
+					console.log(`\nUpdate user's email failed: ${JSON.stringify(err)}\n`);
+					res.status(409).json({
+						status: 'failed',
+						message: err
+					});
+				});
+		})
+		.catch((err) => {
+			console.log(`\nFind the user by email failed: ${err}\n`);
+			res.status(404).json({
+				status: 'failed'
+			});
+		});
 });
 
 // @desc        Update profile
