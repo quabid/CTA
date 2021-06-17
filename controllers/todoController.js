@@ -166,7 +166,7 @@ export const getTodos = asyncHandler(async (req, res) => {
 export const updateTodoDocument = asyncHandler(async (req, res) => {
 	logger.info(`Export: updateTodo, Route: /api/todos/update, Method: POST, Requested URL: ${req.url}`);
 
-	const { rev, tid, name } = req.body;
+	const { rev, tid } = req.body;
 	const oldTodo = {};
 
 	if (req.body.todoId) {
@@ -197,11 +197,9 @@ export const updateTodoDocument = asyncHandler(async (req, res) => {
 		oldTodo.body = req.body.body;
 	}
 
-	oldTodo._rev = rev;
-	oldTodo._id = tid;
-	oldTodo.name = name;
+	oldTodo.id = tid;
 
-	updateTodo(oldTodo)
+	updateTodo(oldTodo, rev)
 		.then((data) => {
 			res.status(200).json({
 				status: 'success',

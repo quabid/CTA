@@ -2,7 +2,7 @@ import axios from 'axios';
 const listUserTodosUrl = process.env.DB_FIND_USER_TODOS;
 const createTodoUrl = process.env.DB_ADD_USER_TODOS_BASE;
 const getTodoUrl = process.env.DB_FIND_USER_TODO;
-const deleteDocumentUrl = process.env.DB_TODOS_URL;
+const deleteDocumentUrl = process.env.DB_TODO_PURGE_URL;
 const updateDocumentUrl = process.env.DB_TODOS_UPDATE_URL;
 
 // List user's todos
@@ -47,12 +47,15 @@ export const deleteTodo = async (tid, rev) => {
 };
 
 // Update todo
-export const updateTodo = async (objFields) => {
+export const updateTodo = async (objFields, rev) => {
 	return await axios({
 		method: 'put',
-		url: `${updateDocumentUrl}/${objFields.name}`,
+		url: `${updateDocumentUrl}/${objFields.id}`,
 		data: {
 			objFields
+		},
+		headers: {
+			'If-Match': rev
 		}
 	});
 };

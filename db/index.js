@@ -7,7 +7,8 @@ import {
 	deleteUser,
 	updateEmail,
 	updatePassword,
-	updateProfile
+	updateProfile,
+	getUserProfile
 } from './saintjohnshospice.js';
 
 import { listTodos, createTodo, getTodo, deleteTodo, updateTodo } from './saintjhonsuserstodos.js';
@@ -26,5 +27,6 @@ export {
 	createTodo,
 	getTodo,
 	deleteTodo,
-	updateTodo
+	updateTodo,
+	getUserProfile
 };
