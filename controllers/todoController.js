@@ -9,7 +9,8 @@ import {
 	createTodo,
 	getTodo,
 	deleteTodo,
-	updateTodo
+	updateTodo,
+	getUserProfile
 } from '../db/index.js';
 
 const logger = bunyan.createLogger({ name: 'Todo Controller' });
@@ -145,10 +146,22 @@ export const getTodos = asyncHandler(async (req, res) => {
 	const author = req.user._id;
 	listTodos(author)
 		.then((data) => {
-			console.log(data.data);
-			res.status(200).json({
-				records: data.data
-			});
+			console.log(`\n\tGot the user's todos: ${JSON.stringify(data.data.docs)}\n`);
+			getUserProfile()
+				.then((profile) => {
+					res.status(200).json({
+						records: data.data,
+						profile: profile.data
+					});
+				})
+				.catch((err) => {
+					console.log(err);
+					res.status(404).json({
+						status: 'failed',
+						message: err.message,
+						cause: err
+					});
+				});
 		})
 		.catch((err) => {
 			console.log(err);

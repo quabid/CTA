@@ -70,7 +70,7 @@ export const updateUserEmail = asyncHandler(async (req, res) => {
 			// Update the user's email
 			updateEmail(userId, userRev, updateObj)
 				.then((data) => {
-					console.log(`\n\tUpdated user's email: ${data.data.docs[0]}\n`);
+					console.log(`\n\tUpdated user's email: ${data.data}\n`);
 					res.status(200).json({
 						status: 'success',
 						payload: data.data.docs[0]
@@ -101,17 +101,21 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 	const { email } = req.body;
 	const updateObj = {};
 
-	if (req.body.fname) {
-		updateObj.fname = req.body.fname;
+	console.log(`\n\tUpdated Profile Data: ${JSON.stringify(req.body)}\n`);
+
+	if (req.body.payload.fname) {
+		updateObj.fname = req.body.payload.fname;
 	}
 
-	if (req.body.lname) {
-		updateObj.lname = req.body.lname;
+	if (req.body.payload.lname) {
+		updateObj.lname = req.body.payload.lname;
 	}
 
-	if (req.body.gender) {
-		updateObj.gender = req.body.gender;
+	if (req.body.payload.gender) {
+		updateObj.gender = req.body.payload.gender;
 	}
+
+	console.log(`\n\tUser's profile update data: ${JSON.stringify(updateObj)}\n`);
 
 	// Find user by email
 	// Use the user._id to find the profile
@@ -139,6 +143,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 					// Update the profile document
 					updateProfile(profileId, profileRev, updateObj)
 						.then((data) => {
+							console.log(`\n\tUser Profile Updated: ${JSON.stringify(data.data)}\n`);
 							res.status(200).json({
 								status: 'success',
 								payload: data.data
@@ -147,10 +152,52 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 						.catch((err) => {
 							console.log(`\nProfile update failed: ${err}\n`);
 							res.status(409).json({
-								status: failed,
+								status: 'failed',
 								error: err
 							});
 						});
+				})
+				.catch((err) => {
+					console.log(`\nFind the user profile failed: ${err}\n`);
+					res.status(404).json({
+						status: 'failed',
+						error: err
+					});
+				});
+		})
+		.catch((err) => {
+			console.log(`\nFind the user by email failed: ${err}\n`);
+			res.status(404).json({
+				status: 'failed'
+			});
+		});
+});
+
+// @desc        Get profile
+// @route       GET /user/profile
+// @access      Private
+export const usersProfile = asyncHandler(async (req, res) => {
+	logger.info(`Export: usersProfile, Route: /user/profile, Method: GET, Requested URL: ${req.url}`);
+
+	const { email } = req.user;
+
+	console.log(`Email: ${email}`);
+
+	findUserByEmail(email)
+		.then((user) => {
+			console.log(`\n\tFound user by email: ${JSON.stringify(user.data)}\n`);
+
+			// Get the user._id
+			const userId = user.data.docs[0]._id;
+
+			// Find the user's profile where the user key == userId
+			getUserProfile(userId)
+				.then((profile) => {
+					console.log(`\n\tFound user's profile: ${JSON.stringify(profile.data)}\n`);
+					res.status(200).json({
+						status: 'success',
+						payload: profile.data.docs[0]
+					});
 				})
 				.catch((err) => {
 					console.log(`\nFind the user profile failed: ${err}\n`);

@@ -21,9 +21,11 @@ export const authUser = asyncHandler(async (req, res) => {
 			.then((data) => {
 				if (data.data.docs.length == '1') {
 					const doc = data.data.docs[0];
-					console.log(doc);
+					console.log(`\n\tFound user by email: ${email} --> Doc: ${JSON.stringify(doc)}\n`);
+
 					comparePassword(password, doc.password, (err, response) => {
-						console.log(response);
+						console.log(`Password comparison response: ${JSON.stringify(response)}`);
+
 						if (response.result) {
 							getUserProfile(doc._id)
 								.then((data) => {
