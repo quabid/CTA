@@ -232,6 +232,7 @@ export const userSignout = asyncHandler(async (req, res) => {
 			.then((user) => {
 				console.log(`${line}\tFound user by email ${JSON.stringify(user)}${brk}\tUser requested signout${brk}`);
 				req.user = null;
+				delete req['user'];
 				res.status(200).json({
 					status: 'success',
 					message: 'Sign Out Successful'
