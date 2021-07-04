@@ -4,6 +4,8 @@ import { generateToken, PropertyRequiredError, hashPassword, comparePassword } f
 import { updateEmail, updateProfile, findUserByEmail, getUserProfile } from '../db/index.js';
 
 const logger = bunyan.createLogger({ name: 'User Controller' });
+const line = `\n----------------------------------------------------------------------------\n\n`;
+const brk = `\n__________________________________________________________________________\n`;
 
 // @desc        Create user profile
 // @route       POST /user/profile/create
@@ -213,4 +215,41 @@ export const usersProfile = asyncHandler(async (req, res) => {
 				status: 'failed'
 			});
 		});
+});
+
+// @desc		Get signout
+// @route		GET /user/signout
+// @access		Private
+export const userSignout = asyncHandler(async (req, res) => {
+	logger.info(`Export: userSignout, Route: /user/signout, Method: GET, Requested URL: ${req.url}`);
+
+	const user = req.user || null;
+
+	if (null !== user) {
+		const email = user.email;
+
+		findUserByEmail(email)
+			.then((user) => {
+				console.log(`${line}\tFound user by email ${JSON.stringify(user)}${brk}\tUser requested signout${brk}`);
+				req.user = null;
+				res.status(200).json({
+					status: 'success',
+					message: 'Sign Out Successful'
+				});
+			})
+			.catch((err) => {
+				console.log(`\nUser ${email} not found${brk}`);
+				res.status(405).json({
+					status: 'failed',
+					cause: `User ${email} not found`
+				});
+			});
+	} else {
+		console.log(`\nNo user${brk}`);
+		res.status(401).json({
+			status: 'failed',
+			error: 'Not authorized',
+			cause: 'User is not signed in'
+		});
+	}
 });

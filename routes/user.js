@@ -8,5 +8,6 @@ userRouter.route('/email/update').post(protect, UC.updateUserEmail);
 userRouter.route('/profile/update').post(protect, UC.updateUserProfile);
 userRouter.route('/profile/create').post(protect, UC.createUserProfile);
 userRouter.route('/profile').get(protect, UC.usersProfile);
+userRouter.route('/signout').get(protect, UC.userSignout);
 
 export default userRouter;

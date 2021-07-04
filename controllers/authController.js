@@ -6,6 +6,8 @@ import { findUserByEmail, addUser, createProfile, getUserProfile } from '../db/i
 
 const logger = bunyan.createLogger({ name: 'Auth Controller' });
 const nanoid = customAlphabet('024698', 15);
+const line = `\n----------------------------------------------------------------------------\n\n`;
+const brk = `\n__________________________________________________________________________\n`;
 
 // @desc        Authenticate user and get token
 // @route       POST /auth/signin
@@ -15,21 +17,21 @@ export const authUser = asyncHandler(async (req, res) => {
 
 	if (req.body.email && req.body.password) {
 		const { email, password } = req.body;
-		console.log(`Sign In Data: ${email} and ${password}`);
+		console.log(`Sign In Data: ${email} and ${password}${line}`);
 
 		findUserByEmail(email)
 			.then((data) => {
 				if (data.data.docs.length == '1') {
 					const doc = data.data.docs[0];
-					console.log(`\n\tFound user by email: ${email} --> Doc: ${JSON.stringify(doc)}\n`);
+					console.log(`\n\tFound user by email: ${email} --> Doc: ${JSON.stringify(doc)}${brk}`);
 
 					comparePassword(password, doc.password, (err, response) => {
-						console.log(`Password comparison response: ${JSON.stringify(response)}`);
+						console.log(`Password comparison response: ${JSON.stringify(response)}${brk}`);
 
 						if (response.result) {
 							getUserProfile(doc._id)
 								.then((data) => {
-									console.log(`Profile data: ${JSON.stringify(data.data.docs[0])}`);
+									console.log(`Profile data: ${JSON.stringify(data.data.docs[0])}${line}`);
 									res.status(200).json({
 										id: doc._id,
 										rev: doc._rev,

@@ -5,6 +5,8 @@ import { findUserByIdAndRev, findUserByEmail } from '../db/index.js';
 export const protect = asyncHandler(async (req, res, next) => {
 	let token;
 
+	console.log(`\n${JSON.stringify(req.headers.authorization)}\n`);
+
 	if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
 		try {
 			token = req.headers.authorization.split(' ')[1];
