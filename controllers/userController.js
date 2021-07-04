@@ -226,11 +226,14 @@ export const userSignout = asyncHandler(async (req, res) => {
 	const user = req.user || null;
 
 	if (null !== user) {
-		const email = user.email;
+		const email = user.email.trim();
+		console.log(`${brk}Looking for user ${email}${brk}`);
 
 		findUserByEmail(email)
 			.then((user) => {
-				console.log(`${line}\tFound user by email ${JSON.stringify(user)}${brk}\tUser requested signout${brk}`);
+				console.log(
+					`${line}\tFound user by email ${user.data.docs[0].email}${brk}\tUser requested signout${brk}`
+				);
 				req.user = null;
 				delete req['user'];
 				res.status(200).json({
@@ -239,7 +242,7 @@ export const userSignout = asyncHandler(async (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.log(`\nUser ${email} not found${brk}`);
+				console.log(`\nUser ${email} not found${line}${err}${brk}`);
 				res.status(405).json({
 					status: 'failed',
 					cause: `User ${email} not found`

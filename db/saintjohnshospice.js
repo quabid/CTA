@@ -8,6 +8,10 @@ const updateUserProfile = process.env.DB_UPDATE_USER_PROFILE_BASE;
 const findUserProfile = process.env.DB_FIND_USER_PROFILE_BASE;
 const updateUser = process.env.DB_UPDATE_USER_BASE;
 
+/* Curl Examples
+url -d '{"selector":{"email":"anita@email.net"}}' -H 'Content-Type: application/json' http://sjhadmin:admin54321@192.168.1.20:5984/saintjohnsusers/_find
+ */
+
 // Get all users
 export const getAllUsers = async () => {
 	return await axios({

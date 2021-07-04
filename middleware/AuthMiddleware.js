@@ -11,7 +11,7 @@ export const protect = asyncHandler(async (req, res, next) => {
 		try {
 			token = req.headers.authorization.split(' ')[1];
 			const decoded = verifyToken(token);
-			console.log(decoded);
+			console.log(`\n\t\tDecoded Token ${JSON.stringify(decoded)}\n\n`);
 			const { data } = await findUserByEmail(decoded.email);
 			// console.log(data);
 			req.user = data.docs[0];
