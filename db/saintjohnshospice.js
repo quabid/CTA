@@ -3,7 +3,7 @@ import { stringify, objectKeysCount, hashPassword } from '../custom_modules/inde
 const allUsers = process.env.ALL_USERS;
 const findUser = process.env.DB_FIND_USER_BASE;
 const newUser = process.env.DB_ADD_NEW_USER_BASE;
-const newUserProfile = process.env.DB_ADD_USER_PROFILE_BASE;
+const newUserProfile = process.env.DB_ADD_USER_PROFILES_BASE;
 const updateUserProfile = process.env.DB_UPDATE_USER_PROFILE_BASE;
 const findUserProfile = process.env.DB_FIND_USER_PROFILE_BASE;
 const updateUser = process.env.DB_UPDATE_USER_BASE;
@@ -49,9 +49,11 @@ export const findUserByIdAndRev = async (id, rev) => {
 
 // Add new user
 export const addUser = async (email, password, type, id) => {
+	console.log(`\n\t\tAdd User URL: ${newUser}\n\n`);
+
 	return await axios({
 		method: 'post',
-		url: newUser,
+		url: `${new String(newUser)}`,
 		data: {
 			docs: [
 				{

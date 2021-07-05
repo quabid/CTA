@@ -20,31 +20,39 @@ export const authUser = asyncHandler(async (req, res) => {
 		console.log(`Sign In Data: ${email} and ${password}${line}`);
 
 		findUserByEmail(email)
-			.then((data) => {
-				if (data.data.docs.length == '1') {
-					const doc = data.data.docs[0];
-					console.log(`\n\tFound user by email: ${email} --> Doc: ${JSON.stringify(doc)}${brk}`);
+			.then((user) => {
+				if (user.data.docs.length == '1') {
+					const userDoc = user.data.docs[0];
+					console.log(`\n\tFound user by email: ${email} --> Doc: ${JSON.stringify(userDoc)}${brk}`);
 
-					comparePassword(password, doc.password, (err, response) => {
+					comparePassword(password, userDoc.password, (err, response) => {
 						console.log(`Password comparison response: ${JSON.stringify(response)}${brk}`);
 
 						if (response.result) {
-							getUserProfile(doc._id)
-								.then((data) => {
-									console.log(`Profile data: ${JSON.stringify(data.data.docs[0])}${line}`);
+							getUserProfile(userDoc._id)
+								.then((userProfile) => {
+									console.log(`Profile data: ${JSON.stringify(userProfile.data.docs[0])}${line}`);
+
 									res.status(200).json({
-										id: doc._id,
-										rev: doc._rev,
-										email: doc.email,
-										profile: data.data.docs[0],
-										token: generateToken(doc._id, doc._rev)
+										id: userDoc._id,
+										rev: userDoc._rev,
+										email: userDoc.email,
+										profile: userProfile.data.docs[0],
+										token: generateToken(userDoc._id, userDoc._rev)
 									});
 								})
 								.catch((err) => {
-									console.log(err.message);
-									delete user['profile'];
+									console.log(`\n\t\tGet User Profile Error ${err.message}\n\n`);
+
+									res.status(404).json({
+										status: 'failed',
+										message: 'Get User Profile Error',
+										cause: err.message
+									});
 								});
 						} else {
+							console.log(`\n\t\tAuthentication Error: Invalid email or password\n\n`);
+
 							res.status(401).json({
 								status: 'failed',
 								message: 'Authentication failed',
@@ -53,6 +61,8 @@ export const authUser = asyncHandler(async (req, res) => {
 						}
 					});
 				} else {
+					console.log(`\n\t\tSign In Error: ${email} is not registered\n\n`);
+
 					res.status(404).json({
 						status: 'failed',
 						message: `No results found for ${email}`,
@@ -61,14 +71,17 @@ export const authUser = asyncHandler(async (req, res) => {
 				}
 			})
 			.catch((err) => {
-				res.status(501).json({
-					status: err.status,
+				console.log(`\n\t\tFind User By Email Error: ${err}\n\n`);
+
+				res.status(404).json({
+					status: 'failed',
 					message: err,
 					cause: err.message
 				});
 			});
 	} else {
-		console.log(`Missing email and password\n`);
+		console.log(`\n\t\tMissing email and password\n\n`);
+
 		res.status(404).json({
 			status: 'failed',
 			message: 'Missing email and password',
@@ -93,6 +106,8 @@ export const registerUser = asyncHandler(async (req, res) => {
 			.then((data) => {
 				// If email exists, tell the user
 				if (data.data.docs.length > 0) {
+					console.log(`\n\t\tRegistration Error: ${email} is already registered\n\n`);
+
 					res.status(400).json({
 						status: 'failed',
 						message: `${email} is already registered`,
@@ -102,10 +117,12 @@ export const registerUser = asyncHandler(async (req, res) => {
 					// Email does not exist, continue with registration then return new user response
 					hashPassword(password, (err, hash) => {
 						if (err) {
-							console.log(err);
+							console.log(`\n\t\tPassword Hashing Error: ${err}\n\n`);
+
 							res.status(500).json({
 								status: 'failed',
-								message: err
+								message: `Password Hasing Error`,
+								cause: err
 							});
 						} else {
 							const id = nanoid();
@@ -114,25 +131,30 @@ export const registerUser = asyncHandler(async (req, res) => {
 									console.log(data.data);
 									createProfile(id.toString())
 										.then((data) => {
-											console.log(data.data);
-											res.status(200).json({
+											console.log(`\n\t\tUser profile successfully created: ${data.status}\n\n`);
+
+											res.status(data.status).json({
 												status: 'success',
 												data: data.data
 											});
 										})
 										.catch((err) => {
-											console.log(err);
+											console.log(`\n\t\tError creating user profile: ${err}`);
+
 											res.status(505).json({
 												status: 'failed',
-												message: err
+												message: `Error creating user profile`,
+												cause: err
 											});
 										});
 								})
 								.catch((err) => {
-									console.log(err);
+									console.log(`\n\t\tAdd User Error: ${err}\n\n`);
+
 									res.status(505).json({
 										status: 'failed',
-										message: err
+										message: `Add User Error`,
+										cause: err
 									});
 								});
 						}
@@ -140,13 +162,17 @@ export const registerUser = asyncHandler(async (req, res) => {
 				}
 			})
 			.catch((err) => {
-				console.log(err);
+				console.log(`\n\t\tFind user by email error: ${err}\n\n`);
+
 				res.status(500).json({
 					status: 'failed',
-					message: err
+					message: `Find user by email error`,
+					cause: err
 				});
 			});
 	} else {
+		console.log(`\n\t\tMissing required registration information\n\n`);
+
 		res.status(417).json({
 			status: 'failed',
 			message: 'Missing required registration information',
