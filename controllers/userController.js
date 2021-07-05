@@ -181,7 +181,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 export const usersProfile = asyncHandler(async (req, res) => {
 	logger.info(`Export: usersProfile, Route: /user/profile, Method: GET, Requested URL: ${req.url}`);
 
-	const { email } = req.user;
+	const { email } = req.params;
 
 	console.log(`Email: ${email}`);
 
