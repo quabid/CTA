@@ -125,7 +125,7 @@ export const getSingleTodo = asyncHandler(async (req, res) => {
 				todoId: tid,
 				data: data.data
 			});
-		})
+nn		})
 		.catch((err) => {
 			console.log(err);
 			res.status(404).json({
@@ -143,7 +143,7 @@ export const getSingleTodo = asyncHandler(async (req, res) => {
 export const getTodos = asyncHandler(async (req, res) => {
 	logger.info(`Export: getTodos, Route: /api/todos, Method: GET, Requested URL: ${req.url}`);
 
-	const author = req.user._id;
+	const author = req.params.userId;
 	listTodos(author)
 		.then((data) => {
 			console.log(`\n\tGot the user's todos: ${JSON.stringify(data.data.docs)}\n`);

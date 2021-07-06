@@ -11,7 +11,8 @@ import dbroutertest from './tests/routes/dbtest.js';
 import usertestrouter from './tests/routes/dbuserstest.js';
 import { errorHandler, notFound } from './middleware/ErrorMiddleware.js';
 import { successMessage } from './custom_modules/index.js';
-
+import dotenv from 'dotenv';
+dotenv.config();
 /* const key = fs.readFileSync('./key.pem');
 const cert = fs.readFileSync('./cert.pem'); */
 

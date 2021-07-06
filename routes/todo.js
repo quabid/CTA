@@ -10,7 +10,7 @@ todoRouter.route('/remove').post(protect, TC.removeTodo);
 
 todoRouter.route('/update').post(protect, TC.updateTodoDocument);
 
-todoRouter.route('/').get(protect, TC.getTodos);
+todoRouter.route('/:userId').get(protect, TC.getTodos);
 
 todoRouter.route('/todo').post(protect, TC.getSingleTodo);
 

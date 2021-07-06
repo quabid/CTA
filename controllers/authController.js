@@ -1,7 +1,13 @@
 import asyncHandler from 'express-async-handler';
 import { customAlphabet } from 'nanoid';
 import bunyan from 'bunyan';
-import { generateToken, PropertyRequiredError, hashPassword, comparePassword } from '../custom_modules/index.js';
+import {
+	generateToken,
+	generateUserToken,
+	PropertyRequiredError,
+	hashPassword,
+	comparePassword
+} from '../custom_modules/index.js';
 import { findUserByEmail, addUser, createProfile, getUserProfile } from '../db/index.js';
 
 const logger = bunyan.createLogger({ name: 'Auth Controller' });
@@ -38,7 +44,7 @@ export const authUser = asyncHandler(async (req, res) => {
 										rev: userDoc._rev,
 										email: userDoc.email,
 										profile: userProfile.data.docs[0],
-										token: generateToken(userDoc._id, userDoc._rev)
+										token: generateUserToken(userDoc._id, userDoc._rev, userDoc.email)
 									});
 								})
 								.catch((err) => {

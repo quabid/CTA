@@ -7,7 +7,7 @@ const userRouter = Router();
 userRouter.route('/email/update').post(protect, UC.updateUserEmail);
 userRouter.route('/profile/update').post(protect, UC.updateUserProfile);
 userRouter.route('/profile/create').post(protect, UC.createUserProfile);
-userRouter.route('/profile/:email').get(protect, UC.usersProfile);
-userRouter.route('/signout').get(protect, UC.userSignout);
+userRouter.route('/profile/:token').get(protect, UC.usersProfile);
+userRouter.route('/signout/:token').get(protect, UC.userSignout);
 
 export default userRouter;

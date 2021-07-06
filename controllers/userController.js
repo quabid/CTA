@@ -1,6 +1,12 @@
 import asyncHandler from 'express-async-handler';
 import bunyan from 'bunyan';
-import { generateToken, PropertyRequiredError, hashPassword, comparePassword } from '../custom_modules/index.js';
+import {
+	generateToken,
+	PropertyRequiredError,
+	hashPassword,
+	comparePassword,
+	verifyUserToken
+} from '../custom_modules/index.js';
 import { updateEmail, updateProfile, findUserByEmail, getUserProfile } from '../db/index.js';
 
 const logger = bunyan.createLogger({ name: 'User Controller' });
@@ -100,7 +106,7 @@ export const updateUserEmail = asyncHandler(async (req, res) => {
 export const updateUserProfile = asyncHandler(async (req, res) => {
 	logger.info(`Export: updateUserProfile, Route: /user/profile/update, Method: POST, Requested URL: ${req.url}`);
 
-	const { email } = req.body;
+	const { email } = req.body.payload;
 	const updateObj = {};
 
 	console.log(`\n\tUpdated Profile Data: ${JSON.stringify(req.body)}\n`);
@@ -181,9 +187,11 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 export const usersProfile = asyncHandler(async (req, res) => {
 	logger.info(`Export: usersProfile, Route: /user/profile, Method: GET, Requested URL: ${req.url}`);
 
-	const { email } = req.params;
+	const { token } = req.params;
+	const decoded = verifyUserToken(token);
+	const email = decoded.email;
 
-	console.log(`Email: ${email}`);
+	console.log(`\n\t\tEmail: ${email}`);
 
 	findUserByEmail(email)
 		.then((user) => {
@@ -223,9 +231,11 @@ export const usersProfile = asyncHandler(async (req, res) => {
 export const userSignout = asyncHandler(async (req, res) => {
 	logger.info(`Export: userSignout, Route: /user/signout, Method: GET, Requested URL: ${req.url}`);
 
-	const user = req.user || null;
+	const token = req.params.token || null;
+	const decoded = verifyUserToken(token);
+	const email = decoded.email;
 
-	if (null !== user) {
+	if (undefined != email) {
 		const email = user.email.trim();
 		console.log(`${brk}Looking for user ${email}${brk}`);
 

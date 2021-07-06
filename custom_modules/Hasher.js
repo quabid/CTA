@@ -1,18 +1,7 @@
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET;
-
-export const generateToken = (id, rev) => jwt.sign({ id: id, rev: rev }, JWT_SECRET, { expiresIn: '30d' });
-
-export const generateUserToken = (id, rev, email) =>
-	jwt.sign({ id: id, rev: rev, email: email }, JWT_SECRET, { expiresIn: '30d' });
-
-export const verifyToken = (token) => jwt.verify(token, JWT_SECRET);
-
-export const verifyUserToken = (token) => jwt.verify(token, JWT_SECRET);
 
 export const hashPassword = (password, done) => {
 	bcrypt.genSalt(10, (err, salt) => {
