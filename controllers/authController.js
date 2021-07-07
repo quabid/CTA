@@ -23,21 +23,29 @@ export const authUser = asyncHandler(async (req, res) => {
 
 	if (req.body.email && req.body.password) {
 		const { email, password } = req.body;
-		console.log(`Sign In Data: ${email} and ${password}${line}`);
+		console.log(`\n\t\tSign In Data: ${email} and ${password}${line}\n\n`);
 
 		findUserByEmail(email)
 			.then((user) => {
 				if (user.data.docs.length == '1') {
 					const userDoc = user.data.docs[0];
-					console.log(`\n\tFound user by email: ${email} --> Doc: ${JSON.stringify(userDoc)}${brk}`);
+					console.log(
+						`\n\t\t At Sign In, Found user by email: ${email} --> Doc: ${JSON.stringify(userDoc)}${brk}`
+					);
 
 					comparePassword(password, userDoc.password, (err, response) => {
-						console.log(`Password comparison response: ${JSON.stringify(response)}${brk}`);
+						console.log(
+							`\n\t\tAt Sign In, Password comparison response: ${JSON.stringify(response)}${brk}`
+						);
 
 						if (response.result) {
 							getUserProfile(userDoc._id)
 								.then((userProfile) => {
-									console.log(`Profile data: ${JSON.stringify(userProfile.data.docs[0])}${line}`);
+									console.log(
+										`\n\t\tSign In Successful\n\t\t\tProfile data: ${JSON.stringify(
+											userProfile.data.docs[0]
+										)}${line}`
+									);
 
 									res.status(200).json({
 										id: userDoc._id,
