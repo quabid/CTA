@@ -12,7 +12,7 @@ import { findUserByEmail, addUser, createProfile, getUserProfile } from '../db/i
 
 const logger = bunyan.createLogger({ name: 'Auth Controller' });
 const nanoid = customAlphabet('024698', 15);
-const line = `\n----------------------------------------------------------------------------\n\n`;
+const line = `\n----------------------------------------------------------------------------\n`;
 const brk = `\n__________________________________________________________________________\n`;
 
 // @desc        Authenticate user and get token
@@ -20,29 +20,28 @@ const brk = `\n_________________________________________________________________
 // @access      Public
 export const authUser = asyncHandler(async (req, res) => {
 	logger.info(`Export: authUser, Route: /auth/signin, Method: POST, Requested URL: ${req.url}`);
+	console.log(`\n\n`);
 
 	if (req.body.email && req.body.password) {
 		const { email, password } = req.body;
-		console.log(`\n\t\tSign In Data: ${email} and ${password}${line}\n\n`);
+		console.log(`\n\n\t\tSign In Data: ${email} and ${password}${line}`);
 
 		findUserByEmail(email)
 			.then((user) => {
 				if (user.data.docs.length == '1') {
 					const userDoc = user.data.docs[0];
 					console.log(
-						`\n\t\t At Sign In, Found user by email: ${email} --> Doc: ${JSON.stringify(userDoc)}${brk}`
+						`\t\t At Sign In, Found user by email: ${email} --> Doc: ${JSON.stringify(userDoc)}${brk}`
 					);
 
 					comparePassword(password, userDoc.password, (err, response) => {
-						console.log(
-							`\n\t\tAt Sign In, Password comparison response: ${JSON.stringify(response)}${brk}`
-						);
+						console.log(`\t\tAt Sign In, Password comparison response: ${JSON.stringify(response)}${brk}`);
 
 						if (response.result) {
 							getUserProfile(userDoc._id)
 								.then((userProfile) => {
 									console.log(
-										`\n\t\tSign In Successful\n\t\t\tProfile data: ${JSON.stringify(
+										`\t\tSign In Successful\n\t\t\tProfile data: ${JSON.stringify(
 											userProfile.data.docs[0]
 										)}${line}`
 									);
@@ -56,7 +55,7 @@ export const authUser = asyncHandler(async (req, res) => {
 									});
 								})
 								.catch((err) => {
-									console.log(`\n\t\tGet User Profile Error ${err.message}\n\n`);
+									console.log(`\t\tGet User Profile Error ${err.message}\n\n`);
 
 									res.status(404).json({
 										status: 'failed',
