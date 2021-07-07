@@ -235,8 +235,9 @@ export const userSignout = asyncHandler(async (req, res) => {
 	const decoded = verifyUserToken(token);
 	const email = decoded.email;
 
+	console.log(`\n\n\t\tSign Out Tokey: ${token}\n\t\tSign Out Email: ${email}`);
+
 	if (undefined != email) {
-		const email = user.email.trim();
 		console.log(`${brk}Looking for user ${email}${brk}`);
 
 		findUserByEmail(email)
